@@ -55,6 +55,18 @@ router.get("/", async (req, res) => {
   }
 });
 
+router.get("/all", async (req, res) => {
+  try {
+    const users = await User.find();
+    let userList = users.map((user) => {
+      return user;
+    });
+    res.status(200).json(userList);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
 //get friends
 router.get("/friends/:userId", async (req, res) => {
   try {
