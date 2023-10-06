@@ -40,10 +40,10 @@ app.use(function (req, res, next) {
   next();
 });
 
-app.use("/api/users", checkUser, userRoute);
+app.use("/api/users", userRoute);
 app.use("/api/auth", authRoute);
-app.use("/api/posts", checkUser, postRoute);
-app.use("/api/storage", checkUser, storageRoute);
+app.use("/api/posts", postRoute);
+app.use("/api/storage", storageRoute);
 
 app.listen(3000, () => {
   console.log("Server is running");
