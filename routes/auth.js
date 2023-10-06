@@ -2,6 +2,12 @@ const router = require("express").Router();
 const User = require("../models/User");
 const bcrypt = require("bcrypt");
 
+const createToken = (id) => {
+  return jwt.sign({ id }, process.env.JWT_SECRET, {
+    expiresIn: maxAge,
+  });
+};
+
 router.post("/register", async (req, res) => {
   try {
     //generate new password
@@ -34,7 +40,8 @@ router.post("/login", async (req, res) => {
     const validPassword = await bcrypt.compare(password, user.password);
     !validPassword && res.status(400).json("Invalid Password");
 
-    res.status(200).json(user);
+    res.cookie("jwt", token, { httpOnly: true, maxAge: maxAge * 3 });
+    res.status(200).json({ user: user._id });
   } catch (err) {
     res.status(400).json({ err });
   }

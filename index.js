@@ -8,6 +8,7 @@ const cors = require("cors");
 const userRoute = require("./routes/users");
 const authRoute = require("./routes/auth");
 const postRoute = require("./routes/posts");
+const storageRoute = require("./routes/storage");
 
 donenv.config();
 
@@ -41,6 +42,7 @@ app.use(function (req, res, next) {
 app.use("/api/users", userRoute);
 app.use("/api/auth", authRoute);
 app.use("/api/posts", postRoute);
+app.use("/api/storage", storageRoute);
 
 app.listen(3000, () => {
   console.log("Server is running");
