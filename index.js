@@ -9,6 +9,7 @@ const userRoute = require("./routes/users");
 const authRoute = require("./routes/auth");
 const postRoute = require("./routes/posts");
 const storageRoute = require("./routes/storage");
+const { checkUser } = require("./middleware/authMiddleware");
 
 donenv.config();
 
@@ -39,10 +40,10 @@ app.use(function (req, res, next) {
   next();
 });
 
-app.use("/api/users", userRoute);
+app.use("/api/users", checkUser, userRoute);
 app.use("/api/auth", authRoute);
-app.use("/api/posts", postRoute);
-app.use("/api/storage", storageRoute);
+app.use("/api/posts", checkUser, postRoute);
+app.use("/api/storage", checkUser, storageRoute);
 
 app.listen(3000, () => {
   console.log("Server is running");

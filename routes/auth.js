@@ -1,6 +1,9 @@
 const router = require("express").Router();
+const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 const bcrypt = require("bcrypt");
+
+maxAge = 1000 * 24 * 60 * 60;
 
 const createToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
@@ -40,6 +43,8 @@ router.post("/login", async (req, res) => {
     const validPassword = await bcrypt.compare(password, user.password);
     !validPassword && res.status(400).json("Invalid Password");
 
+    const token = createToken(user._id);
+    console.log(token);
     res.cookie("jwt", token, { httpOnly: true, maxAge: maxAge * 3 });
     res.status(200).json({ user: user._id });
   } catch (err) {
