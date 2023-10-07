@@ -20,7 +20,10 @@ router.post("/upload", upload.single("userImage"), async (req, res) => {
     const result = await cloudinary.uploader
       .upload_stream(
         {
-          // Upload options if necessary, like folder, tags, etc.
+          transformation: [
+            { height: 350, crop: "fit" },
+            { gravity: "auto:face", height: 350, width: 250, crop: "crop" },
+          ],
         },
         (error, result) => {
           if (error) throw error;
