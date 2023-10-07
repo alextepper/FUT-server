@@ -44,9 +44,8 @@ router.post("/upload", upload.single("userImage"), async (req, res) => {
             { gravity: "auto:face", height: 350, width: 250, crop: "crop" },
           ],
         },
-        (error, result) => {
+        (error) => {
           if (error) throw error;
-          res.json(result);
         }
       )
       .end(req.file.buffer);
@@ -54,6 +53,7 @@ router.post("/upload", upload.single("userImage"), async (req, res) => {
     const imageUrl = result.secure_url;
 
     const updatedUser = await saveImageUrlToDb(req.body.username, imageUrl);
+    res.json({ message: "Image uploaded successfully", user: updatedUser });
   } catch (error) {
     res.status(500).json({ error: "Failed to upload image" });
   }
