@@ -50,11 +50,20 @@ const UserSchema = new mongoose.Schema(
     },
     from: {
       type: String,
-      max: 50,
+      max: 2,
     },
     relationship: {
       type: Number,
       enum: [1, 2, 3],
+    },
+    matMark: {
+      type: Number,
+    },
+    lanMark: {
+      type: Number,
+    },
+    artMark: {
+      type: Number,
     },
   },
   { timestamps: true }

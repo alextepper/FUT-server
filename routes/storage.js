@@ -2,6 +2,7 @@ const express = require("express");
 const multer = require("multer");
 const { v2: cloudinary } = require("cloudinary");
 const router = express.Router();
+const User = require("../models/User");
 
 // Cloudinary configuration
 cloudinary.config({
@@ -34,28 +35,36 @@ async function saveImageUrlToDb(username, imageUrl) {
 router.post("/upload", upload.single("userImage"), async (req, res) => {
   try {
     // Upload to Cloudinary
-    const result = await cloudinary.uploader
-      .upload_stream(
-        {
-          resource_type: "auto",
-          folder: `fut-card-profile-pics/${req.body.username}`,
-          transformation: [
-            { height: 350, crop: "fit" },
-            { gravity: "auto:face", height: 350, width: 250, crop: "crop" },
-          ],
-        },
-        (error) => {
-          if (error) throw error;
-        }
-      )
-      .end(req.file.buffer);
+    const result = await new Promise((resolve, reject) => {
+      cloudinary.uploader
+        .upload_stream(
+          {
+            resource_type: "auto",
+            folder: `fut-card-profile-pics/${req.body.username}`,
+            background_removal: "cloudinary_ai",
+            transformation: [
+              { height: 350, crop: "fit" },
+              { gravity: "auto:face", height: 350, width: 250, crop: "crop" },
+            ],
+          },
+          (error, result) => {
+            if (error) reject(error);
+            else resolve(result);
+          }
+        )
+        .end(req.file.buffer);
+    });
+    console.log(result);
 
     const imageUrl = result.secure_url;
 
     const updatedUser = await saveImageUrlToDb(req.body.username, imageUrl);
     res.json({ message: "Image uploaded successfully", user: updatedUser });
   } catch (error) {
-    res.status(500).json({ error: "Failed to upload image" });
+    console.error(error);
+    res
+      .status(500)
+      .json({ error: "Failed to upload image", details: error.message });
   }
 });
 

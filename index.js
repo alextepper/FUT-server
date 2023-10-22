@@ -1,7 +1,8 @@
+const donenv = require("dotenv");
+donenv.config();
 const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
-const donenv = require("dotenv");
 const helmet = require("helmet");
 const morgan = require("morgan");
 const cors = require("cors");
@@ -10,8 +11,6 @@ const authRoute = require("./routes/auth");
 const postRoute = require("./routes/posts");
 const storageRoute = require("./routes/storage");
 const { checkUser } = require("./middleware/authMiddleware");
-
-donenv.config();
 
 const connectDB = async () => {
   try {
@@ -45,6 +44,6 @@ app.use("/api/auth", authRoute);
 app.use("/api/posts", postRoute);
 app.use("/api/storage", storageRoute);
 
-app.listen(3000, () => {
+app.listen(5000, () => {
   console.log("Server is running");
 });
