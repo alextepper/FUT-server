@@ -5,8 +5,8 @@ const bcrypt = require("bcrypt");
 
 maxAge = 1000 * 24 * 60 * 60;
 
-const createToken = (id) => {
-  return jwt.sign({ id }, process.env.JWT_SECRET, {
+const createToken = (userObject) => {
+  return jwt.sign(userObject, process.env.JWT_SECRET, {
     expiresIn: maxAge,
   });
 };
@@ -43,9 +43,12 @@ router.post("/login", async (req, res) => {
     const validPassword = await bcrypt.compare(password, user.password);
     !validPassword && res.status(400).json("Invalid Password");
 
-    const token = createToken(user._id);
-    res.cookie("jwt", token, { httpOnly: true, maxAge: maxAge * 3 });
-    res.status(200).json(user);
+    const token = createToken({
+      id: user._id,
+      username: user.username,
+      profilePicture: user.profilePicture,
+    });
+    res.status(200).json({ token });
   } catch (err) {
     res.status(400).json({ err });
   }

@@ -10,6 +10,7 @@ const userRoute = require("./routes/users");
 const authRoute = require("./routes/auth");
 const postRoute = require("./routes/posts");
 const storageRoute = require("./routes/storage");
+const testRoutes = require("./routes/test");
 const { checkUser } = require("./middleware/authMiddleware");
 
 const connectDB = async () => {
@@ -43,6 +44,7 @@ app.use("/api/users", userRoute);
 app.use("/api/auth", authRoute);
 app.use("/api/posts", postRoute);
 app.use("/api/storage", storageRoute);
+app.use("/api/questions", testRoutes);
 
 app.listen(5000, () => {
   console.log("Server is running");
