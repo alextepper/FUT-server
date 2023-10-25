@@ -26,9 +26,34 @@ const calculateScore = async (quizTryId) => {
     quizTry.calculatedScore = score;
     await quizTry.save();
 
-    if (!user.matMark || user.matMark < score) {
-      user.matMark = score;
-      await user.save();
+    switch (quizTry.subject) {
+      case "math":
+        if (!user.matMark || user.matMark < score) {
+          user.matMark = score;
+          user.generalMark = Math.round(
+            (user.matMark + user.artMark + user.lanMark) / 3
+          );
+          await user.save();
+        }
+        break;
+      case "lang":
+        if (!user.lanMark || user.lanMark < score) {
+          user.lanMark = score;
+          user.generalMark = Math.round(
+            (user.matMark + user.artMark + user.lanMark) / 3
+          );
+          await user.save();
+        }
+        break;
+      case "arts":
+        if (!user.artMark || user.artMark < score) {
+          user.artMark = score;
+          user.generalMark = Math.round(
+            (user.matMark + user.artMark + user.lanMark) / 3
+          );
+          await user.save();
+        }
+        break;
     }
 
     return score;
@@ -119,7 +144,8 @@ router.post("/check", async (req, res) => {
     // Evaluate the score
     if (correctCount >= 4) {
       const nextLevelQuestions = await Question.find({
-        difficultyLevel: difficultyLevel + 1, // Assuming difficulty level increases sequentially
+        difficultyLevel: difficultyLevel + 1,
+        subject: quizInstance.subject,
       })
         .select("-correctAnswer")
         .limit(5); // Sending only 5 questions for next level
@@ -130,7 +156,7 @@ router.post("/check", async (req, res) => {
         // If there are no more questions, the quiz is finished
         const score = await calculateScore(quizTryId);
         return res.json({
-          message: `Your score is ${score * 100}.`,
+          message: `Your score is ${score}.`,
           quizCompleted: true,
         });
       }

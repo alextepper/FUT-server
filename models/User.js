@@ -65,6 +65,9 @@ const UserSchema = new mongoose.Schema(
     artMark: {
       type: Number,
     },
+    generalMark: {
+      type: Number,
+    },
   },
   { timestamps: true }
 );

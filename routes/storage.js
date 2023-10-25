@@ -43,8 +43,8 @@ router.post("/upload", upload.single("userImage"), async (req, res) => {
             folder: `fut-card-profile-pics/${req.body.username}`,
             background_removal: "cloudinary_ai",
             transformation: [
-              { height: 350, crop: "fit" },
-              { gravity: "auto:face", height: 350, width: 250, crop: "crop" },
+              { height: 700, crop: "fit" },
+              { gravity: "auto:face", height: 700, width: 500, crop: "crop" },
             ],
           },
           (error, result) => {
