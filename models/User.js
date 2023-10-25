@@ -51,6 +51,7 @@ const UserSchema = new mongoose.Schema(
     from: {
       type: String,
       max: 2,
+      default: "IL",
     },
     relationship: {
       type: Number,
@@ -58,15 +59,19 @@ const UserSchema = new mongoose.Schema(
     },
     matMark: {
       type: Number,
+      default: 0,
     },
     lanMark: {
       type: Number,
+      default: 0,
     },
     artMark: {
       type: Number,
+      default: 0,
     },
     generalMark: {
       type: Number,
+      default: 0,
     },
   },
   { timestamps: true }

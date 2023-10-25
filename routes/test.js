@@ -165,6 +165,7 @@ router.post("/check", async (req, res) => {
       const score = await calculateScore(quizTryId);
       return res.json({
         message: "You can see your results on your page.",
+        quizCompleted: true,
       });
     }
   } catch (error) {
