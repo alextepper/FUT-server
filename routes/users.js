@@ -14,6 +14,25 @@ router.put("/:id", async (req, res) => {
   }
 });
 
+router.post("/cloudinary-webhook/:id", async (req, res) => {
+  const payload = req.body;
+
+  if ("secure_url" in payload) {
+    try {
+      const user = await User.findByIdAndUpdate(req.params.id, {
+        $set: {
+          profilePicture: payload.secure_url,
+        },
+      });
+    } catch (err) {
+      console.error(err);
+    }
+  } else {
+    console.warn("response has no url");
+  }
+  return res.status(200).end();
+});
+
 //delete user
 router.delete("/:id", async (req, res) => {
   if (req.body.userId === req.params.id || req.body.isAdmin) {

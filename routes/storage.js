@@ -42,6 +42,9 @@ router.post("/upload", upload.single("userImage"), async (req, res) => {
             resource_type: "auto",
             folder: `fut-card-profile-pics/${req.body.username}`,
             background_removal: "cloudinary_ai",
+            notification_url:
+              "https://fut-server.onrender.com/api/users/cloudinary-webhook/" +
+              req.body.userId,
             transformation: [
               { height: 700, crop: "fit" },
               { gravity: "auto:face", height: 700, width: 500, crop: "crop" },
@@ -54,7 +57,6 @@ router.post("/upload", upload.single("userImage"), async (req, res) => {
         )
         .end(req.file.buffer);
     });
-    console.log(result);
 
     const imageUrl = result.secure_url;
 
