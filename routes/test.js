@@ -143,12 +143,16 @@ router.post("/check", async (req, res) => {
 
     // Evaluate the score
     if (correctCount >= 4) {
-      const nextLevelQuestions = await Question.find({
-        difficultyLevel: difficultyLevel + 1,
-        subject: quizInstance.subject,
-      })
-        .select("-correctAnswer")
-        .limit(5); // Sending only 5 questions for next level
+      const nextLevelQuestions = await Question.aggregate([
+        {
+          $match: {
+            difficultyLevel: difficultyLevel + 1,
+            subject: quizInstance.subject,
+          },
+        },
+        { $project: { correctAnswer: 0 } },
+        { $sample: { size: 5 } },
+      ]);
 
       if (nextLevelQuestions.length > 0) {
         return res.json({ nextLevelQuestions });
