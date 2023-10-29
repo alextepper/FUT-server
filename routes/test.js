@@ -20,7 +20,7 @@ const calculateScore = async (quizTryId) => {
     ).length;
 
     // Calculate the score by dividing the number of correct answers by 25
-    const score = (correctAnswers / 25) * 100;
+    const score = Math.floor((correctAnswers / 25) * 100);
 
     // Save the calculated score to the quizTry
     quizTry.calculatedScore = score;
