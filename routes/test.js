@@ -173,6 +173,47 @@ router.post("/check", async (req, res) => {
   }
 });
 
+router.get("/quiztries/:id", async (req, res) => {
+  try {
+    const quizTries = await QuizTry.find({ userId: req.params.id });
+    res.status(200).json(quizTries);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
+router.get("/quiztry/questions/:id", async (req, res) => {
+  try {
+    const quizTry = await QuizTry.findOne({ _id: req.params.id });
+
+    // Create a hash map for quick lookup.
+    const answerMap = {};
+    quizTry.answers.forEach((answer) => {
+      answerMap[String(answer.questionId)] = {
+        providedAnswer: answer.providedAnswer,
+        correct: answer.correct,
+      };
+    });
+
+    const questionIds = Object.keys(answerMap);
+    const questions = await Question.find({ _id: { $in: questionIds } });
+
+    const mergedData = questions.map((question) => {
+      const associatedAnswer = answerMap[String(question._id)];
+      return {
+        questionText: question.questionText,
+        difficultyLevel: question.difficultyLevel,
+        providedAnswer: associatedAnswer.providedAnswer,
+        correct: associatedAnswer.correct,
+      };
+    });
+
+    res.status(200).json(mergedData);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
 router.post("/create", async (req, res) => {
   const { subject, difficultyLevel, questionText, options, correctAnswer } =
     req.body;
