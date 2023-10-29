@@ -234,6 +234,40 @@ router.post("/create", async (req, res) => {
   }
 });
 
+router.post("/create/bulk", async (req, res) => {
+  const questions = req.body;
+
+  // Check if the request body is an array
+  if (!Array.isArray(questions)) {
+    return res
+      .status(400)
+      .json({ message: "Input should be an array of questions." });
+  }
+
+  // Validate each question in the array
+  for (let question of questions) {
+    const { subject, difficultyLevel, questionText, options, correctAnswer } =
+      question;
+
+    if (
+      !subject ||
+      !difficultyLevel ||
+      !questionText ||
+      !options ||
+      !correctAnswer
+    ) {
+      return res.status(400).json({ message: "Incomplete question details." });
+    }
+  }
+
+  try {
+    const savedQuestions = await Question.insertMany(questions);
+    res.json(savedQuestions);
+  } catch (error) {
+    res.status(500).json({ message: "Server error." });
+  }
+});
+
 // READ all questions
 router.get("/", async (req, res) => {
   try {
